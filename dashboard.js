@@ -435,10 +435,13 @@ function connectStream() {
 
     // Special alert for the Command Centre when a citizen submits an SOS.
     es.addEventListener("citizen-emergency", async () => {
-      if (state.role !== "command") return;
-      await render();
-      showCommandCitizenAlert();
-    });
+    console.log("🚨 CITIZEN EMERGENCY EVENT RECEIVED");
+    
+    if (state.role !== "command") return;
+
+    await render();
+    showCommandCitizenAlert();
+});
 
     es.onerror = () => { /* browser auto-reconnects; nothing to do */ };
   } catch {
