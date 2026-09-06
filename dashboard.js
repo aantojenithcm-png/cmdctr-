@@ -88,7 +88,7 @@ function renderLogin(role, message) {
   document.getElementById("main").innerHTML = `
     <div class="main-head">
       <h2>Sign in — ${label}</h2>
-      <div class="sub">Demo credentials: username "<b>${role}</b>", password "<b>password123</b>".</div>
+      <div class="sub">Enter your password to sign in.</div>
     </div>
     <div class="dpanel" style="max-width:360px;">
       <form id="login-form">
