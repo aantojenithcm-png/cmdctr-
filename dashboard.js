@@ -195,22 +195,79 @@ function wireLogout(role) {
 
 // ---------- Command Centre ----------
 async function renderCommand() {
-  const [incRes, logRes, pendingRes] = await Promise.all([
+  const [incRes, pendingRes, logRes] = await Promise.all([
     apiGet("/api/incidents/active", { auth: true, role: "command" }),
-    apiGet("/api/log", { auth: true, role: "command" }),
     apiGet("/api/incidents/pending", { auth: true, role: "command" }),
+    apiGet("/api/log", { auth: true, role: "command" }),
   ]);
-  if (incRes.status === 401 || logRes.status === 401) {
+
+  if (incRes.status === 401 || pendingRes.status === 401 || logRes.status === 401) {
     Auth.clear("command");
     return renderLogin("command", "Your session expired — please sign in again.");
   }
+
   const inc = incRes.data;
-  const log = logRes.data || [];
   const pending = pendingRes.data || [];
+  const log = logRes.data || [];
 
   const triggerButtons = state.emergencyTypes.map(t => `
     <button class="trigger-btn sev-${t.severity}" data-trigger="${t.id}">${t.label}</button>
   `).join("");
+
+  const pendingAlerts = pending.length ? pending.map(p => `
+    <div class="dpanel accent" style="margin-bottom:10px;">
+      <div class="incident-top">
+        <div>
+          <span class="incident-id">${p.id}</span>
+          <span class="pill amber">PENDING DECISION</span>
+
+          <div class="incident-title" style="margin-top:6px;">
+            🚨 ${p.label}
+          </div>
+
+          <div class="incident-time">
+            ${p.time} · citizen-reported
+          </div>
+
+          <div style="font-size:13px; margin-top:8px;">
+            📍 ${p.location || "Not provided"}
+          </div>
+
+          ${p.latitude != null && p.longitude != null ? `
+            <div style="margin-top:6px;">
+              <a href="https://www.google.com/maps?q=${p.latitude},${p.longitude}"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 style="color:var(--teal);">
+                Open location in Google Maps ↗
+              </a>
+            </div>
+          ` : ""}
+
+          ${p.details ? `
+            <div style="font-size:13px; color:var(--muted); margin-top:6px;">
+              ${p.details}
+            </div>
+          ` : ""}
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:12px;">
+        <button class="trigger-btn" data-implement="${p.id}"
+          style="background:var(--teal); color:#06231F; border:none; font-weight:700;">
+          Implement emergency
+        </button>
+
+        <button class="resolve-btn" data-reject="${p.id}">
+          Reject
+        </button>
+      </div>
+    </div>
+  `).join("") : `
+    <div class="dpanel" style="font-size:13px; color:var(--muted);">
+      No pending citizen emergency alerts.
+    </div>
+  `;
 
   const incidentCard = inc ? `
     <div class="dpanel accent">
@@ -218,22 +275,54 @@ async function renderCommand() {
         <div>
           <span class="incident-id">${inc.id}</span>
           <span class="pill ${sevPillClass(inc.severity)}">${inc.severity}</span>
+
           <div class="incident-title">${inc.label}</div>
-          <div class="incident-time">${inc.time}${inc.createdBy === "citizen" ? " · citizen-reported" : ""}</div>
-          <div style="font-size:13px; margin-top:8px;">📍 ${inc.location || "Not provided"}</div>
-          ${inc.details ? `<div style="font-size:13px; color:var(--muted); margin-top:4px;">${inc.details}</div>` : ""}
+
+          <div class="incident-time">
+            ${inc.time}${inc.createdBy === "citizen" ? " · citizen-reported" : ""}
+          </div>
+
+          <div style="font-size:13px; margin-top:8px;">
+            📍 ${inc.location || "Not provided"}
+          </div>
+
+          ${inc.latitude != null && inc.longitude != null ? `
+            <div style="margin-top:6px;">
+              <a href="https://www.google.com/maps?q=${inc.latitude},${inc.longitude}"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 style="color:var(--teal);">
+                Open location in Google Maps ↗
+              </a>
+            </div>
+          ` : ""}
+
+          ${inc.details ? `
+            <div style="font-size:13px; color:var(--muted); margin-top:4px;">
+              ${inc.details}
+            </div>
+          ` : ""}
         </div>
-        <button class="resolve-btn" id="resolve-btn">Mark resolved</button>
+
+        <button class="resolve-btn" id="resolve-btn">
+          Mark resolved
+        </button>
       </div>
+
       <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:12px;">
-        ${inc.routes.map(id => `<span class="pill teal">${deptName(id)}</span>`).join("")}
+        ${(inc.routes || []).map(id => `
+          <span class="pill teal">${deptName(id)}</span>
+        `).join("")}
       </div>
     </div>
   ` : "";
 
   const statusGrid = state.departments.map(d => {
-    const routed = inc && inc.routes.includes(d.id);
-    const status = routed ? ((inc.departmentStatuses || {})[d.id] || "NEW") : "IDLE";
+    const routed = inc && (inc.routes || []).includes(d.id);
+    const status = routed
+      ? ((inc.departmentStatuses || {})[d.id] || "NEW")
+      : "IDLE";
+
     return `
       <div class="status-tile ${routed ? "routed" : ""}">
         <span class="icon st-icon" data-icon="${d.icon}"></span>
@@ -244,85 +333,140 @@ async function renderCommand() {
   }).join("");
 
   const logRows = log.length ? log.map(e => `
-    <div class="log-row"><span>${e.text}</span><span class="log-time">${e.time}</span></div>
-  `).join("") : `<div style="font-size:13px; color:var(--muted);">No events yet. Trigger one above.</div>`;
+    <div class="log-row">
+      <span>${e.text}</span>
+      <span class="log-time">${e.time}</span>
+    </div>
+  `).join("") : `
+    <div style="font-size:13px; color:var(--muted);">
+      No events yet.
+    </div>
+  `;
 
   document.getElementById("main").innerHTML = `
     <div class="main-head" style="display:flex; align-items:flex-start;">
       <div>
         <h2>Command centre</h2>
-        <div class="sub">Orchestrates routing. Cannot edit department data directly.</div>
+        <div class="sub">
+          Reviews citizen alerts and decides whether to implement emergency response.
+        </div>
       </div>
       ${logoutLink()}
     </div>
+
+    <div class="label-row" style="margin-top:8px;">
+      🚨 Citizen emergency alerts
+    </div>
+
+    ${pendingAlerts}
+
     <div class="dpanel">
-      <div class="label-row">Classify and trigger an event</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
-        <input id="incident-location" placeholder="Location (e.g. Anna Nagar, Chennai)" style="padding:10px; border-radius:6px; border:1px solid var(--border); background:var(--panel2); color:var(--text);">
-        <input id="incident-details" placeholder="Short emergency details" style="padding:10px; border-radius:6px; border:1px solid var(--border); background:var(--panel2); color:var(--text);">
+      <div class="label-row">
+        Classify and trigger an event
       </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
+        <input id="incident-location"
+          placeholder="Location (e.g. Anna Nagar, Chennai)"
+          style="padding:10px; border-radius:6px; border:1px solid var(--border); background:var(--panel2); color:var(--text);">
+
+        <input id="incident-details"
+          placeholder="Short emergency details"
+          style="padding:10px; border-radius:6px; border:1px solid var(--border); background:var(--panel2); color:var(--text);">
+      </div>
+
       <div class="trigger-row">${triggerButtons}</div>
     </div>
-    ${pending.length ? `
-      <div class="label-row" style="margin-top:8px;">Citizen reports awaiting decision</div>
-      ${pending.map(r => `
-        <div class="dpanel accent" style="margin-bottom:10px;">
-          <div class="incident-top">
-            <div>
-              <span class="incident-id">${r.id}</span>
-              <span class="pill amber">AWAITING DECISION</span>
-              <div class="incident-title">Citizen emergency report</div>
-              <div class="incident-time">${r.time}</div>
-              <div style="font-size:13px; margin-top:8px;">🚨 ${deptName(r.departmentId)} · 📍 ${r.location || "Not provided"}</div>
-              ${r.details ? `<div style="font-size:13px; color:var(--muted); margin-top:4px;">${r.details}</div>` : ""}
-              ${r.latitude != null && r.longitude != null ? `<div style="font-size:12px; margin-top:5px;"><a href="https://www.google.com/maps?q=${encodeURIComponent(r.latitude + "," + r.longitude)}" target="_blank" rel="noopener noreferrer" style="color:var(--teal);">Open location in Google Maps ↗</a></div>` : ""}
-            </div>
-            <div style="display:flex; gap:6px; align-items:flex-start;">
-              <button class="trigger-btn citizen-decision" data-report="${r.id}" data-decision="approve">Implement emergency</button>
-              <button class="resolve-btn citizen-decision" data-report="${r.id}" data-decision="reject">Reject</button>
-            </div>
-          </div>
-        </div>
-      `).join("")}
-    ` : ""}
+
     ${incidentCard}
-    <div class="label-row" style="margin-top:8px;">Department status</div>
+
+    <div class="label-row" style="margin-top:8px;">
+      Department status
+    </div>
+
     <div class="status-grid">${statusGrid}</div>
+
     <div class="label-row">Event log</div>
+
     <div class="dpanel">${logRows}</div>
   `;
 
   wireLogout("command");
+
   document.querySelectorAll("[data-trigger]").forEach(btn => {
     btn.addEventListener("click", async () => {
       btn.disabled = true;
+
       const r = await apiPost("/api/incidents/trigger", {
         typeId: btn.dataset.trigger,
         location: document.getElementById("incident-location")?.value.trim(),
         details: document.getElementById("incident-details")?.value.trim()
       }, { auth: true, role: "command" });
-      if (r.status === 401) { Auth.clear("command"); return render(); }
+
+      if (r.status === 401) {
+        Auth.clear("command");
+        return render();
+      }
+
       render();
     });
   });
 
-  document.querySelectorAll(".citizen-decision").forEach(btn => {
+  document.querySelectorAll("[data-implement]").forEach(btn => {
     btn.addEventListener("click", async () => {
       btn.disabled = true;
-      const r = await apiPost("/api/incidents/citizen-decision", {
-        reportId: btn.dataset.report,
-        decision: btn.dataset.decision
-      }, { auth: true, role: "command" });
-      if (r.status === 401) { Auth.clear("command"); return render(); }
+
+      const r = await apiPost(
+        "/api/incidents/implement",
+        { incidentId: btn.dataset.implement },
+        { auth: true, role: "command" }
+      );
+
+      if (r.status === 401) {
+        Auth.clear("command");
+        return render();
+      }
+
       render();
     });
   });
-  const resolveBtn = document.getElementById("resolve-btn");
-  if (resolveBtn) resolveBtn.addEventListener("click", async () => {
-    const r = await apiPost("/api/incidents/resolve", {}, { auth: true, role: "command" });
-    if (r.status === 401) { Auth.clear("command"); }
-    render();
+
+  document.querySelectorAll("[data-reject]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      btn.disabled = true;
+
+      const r = await apiPost(
+        "/api/incidents/reject",
+        { incidentId: btn.dataset.reject },
+        { auth: true, role: "command" }
+      );
+
+      if (r.status === 401) {
+        Auth.clear("command");
+        return render();
+      }
+
+      render();
+    });
   });
+
+  const resolveBtn = document.getElementById("resolve-btn");
+
+  if (resolveBtn) {
+    resolveBtn.addEventListener("click", async () => {
+      const r = await apiPost(
+        "/api/incidents/resolve",
+        {},
+        { auth: true, role: "command" }
+      );
+
+      if (r.status === 401) {
+        Auth.clear("command");
+      }
+
+      render();
+    });
+  }
 }
 
 // ---------- Department view ----------
@@ -392,134 +536,290 @@ async function renderDepartment(deptId) {
 
 // ---------- Citizen view (no auth — hits the public-filtered endpoint only) ----------
 async function renderCitizen() {
-  const { data } = await apiGet("/api/incidents/active/public");
-  const pub = data || { alert: "No active alerts in your area.", nearestER: "Open", roadClosures: "None nearby", ambulanceETA: "—" };
-  const departments = state.departments || [];
+  const [{ data: pub }, { data: departments }] = await Promise.all([
+    apiGet("/api/incidents/active/public"),
+    apiGet("/api/departments")
+  ]);
+
+  const publicData = pub || {
+    alert: "No active alerts in your area.",
+    nearestER: "Open",
+    roadClosures: "None nearby",
+    ambulanceETA: "—"
+  };
+
+  const deptList = departments || state.departments || [];
 
   document.getElementById("main").innerHTML = `
     <div class="citizen-wrap">
+
       <div class="main-head">
         <h2>Citizen app</h2>
-        <div class="sub">Only what you need to know — nothing internal to any department.</div>
+        <div class="sub">
+          Only what you need to know — nothing internal to any department.
+        </div>
       </div>
+
       <div style="display:grid; gap:8px; margin-bottom:12px;">
-        <select id="citizen-department" style="padding:10px; border-radius:6px; border:1px solid var(--border); background:var(--panel2); color:var(--text);">
-          <option value="">Select the type of emergency</option>
-          ${departments.map(d => `<option value="${d.id}">${d.name}</option>`).join("")}
+
+        <select id="citizen-department"
+          style="padding:10px; border-radius:6px; border:1px solid var(--border);
+          background:var(--panel2); color:var(--text);">
+
+          <option value="">
+            Select the type of emergency
+          </option>
+
+          ${deptList.map(d => `
+            <option value="${d.id}">
+              ${d.name}
+            </option>
+          `).join("")}
+
         </select>
-        <input id="citizen-location" placeholder="Your location / landmark" style="padding:10px; border-radius:6px; border:1px solid var(--border); background:var(--panel2); color:var(--text);">
-        <input id="citizen-details" placeholder="What happened?" style="padding:10px; border-radius:6px; border:1px solid var(--border); background:var(--panel2); color:var(--text);">
+
+        <input id="citizen-location"
+          placeholder="Your location / landmark"
+          style="padding:10px; border-radius:6px; border:1px solid var(--border);
+          background:var(--panel2); color:var(--text);">
+
+        <input id="citizen-details"
+          placeholder="What happened?"
+          style="padding:10px; border-radius:6px; border:1px solid var(--border);
+          background:var(--panel2); color:var(--text);">
+
       </div>
-      <button class="sos-btn" id="sos-btn"><span class="icon" data-icon="triangle-exclamation"></span> Report an emergency</button>
-      <div id="sos-error" style="color:var(--amber); font-size:12.5px; margin:-10px 0 14px; display:none;"></div>
-      <div class="label-row"><span class="icon" data-icon="bell"></span> Alerts near you</div>
-      <div class="dpanel" style="font-size:13.5px; line-height:1.6;">${pub.alert}</div>
-      <div class="label-row"><span class="icon" data-icon="location-dot"></span> Public status</div>
+
+      <button class="sos-btn" id="sos-btn">
+        <span class="icon" data-icon="triangle-exclamation"></span>
+        Report an emergency
+      </button>
+
+      <div id="sos-error"
+        style="color:var(--amber); font-size:12.5px; margin:-10px 0 14px; display:none;">
+      </div>
+
+      <div class="label-row">
+        <span class="icon" data-icon="bell"></span>
+        Alerts near you
+      </div>
+
+      <div class="dpanel" style="font-size:13.5px; line-height:1.6;">
+        ${publicData.alert}
+      </div>
+
+      <div class="label-row">
+        <span class="icon" data-icon="location-dot"></span>
+        Public status
+      </div>
+
       <div class="dpanel">
-        <div class="pub-row"><span>Nearest ER</span><span>${pub.nearestER}</span></div>
-        <div class="pub-row"><span>Road closures</span><span>${pub.roadClosures}</span></div>
-        <div class="pub-row"><span>Ambulance ETA</span><span>${pub.ambulanceETA}</span></div>
-        <div class="pub-row"><span>Incident location</span><span>${pub.location || "—"}</span></div>
-      </div>
-      <div class="citizen-foot">Your report is sent only to the Command Centre first. No department is alerted until the Command Centre approves the emergency.</div>
-    </div>
+        <div class="pub-row">
+          <span>Nearest ER</span>
+          <span>${publicData.nearestER}</span>
+        </div>
 
-    <div id="location-modal" style="position:fixed; inset:0; z-index:10000; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.65); padding:20px;">
-      <div class="dpanel" style="width:min(480px,100%);">
-        <h3 style="margin-top:0;">Allow location access</h3>
-        <p style="font-size:13px; color:var(--muted);">Your location is needed to send the emergency report. Choose <b>Allow</b> in your browser, then confirm the location in Google Maps.</p>
-        <button id="location-allow" class="trigger-btn">Allow location access</button>
-        <button id="location-manual" class="resolve-btn" style="margin-left:6px;">Use entered location</button>
-        <div id="location-error" style="color:var(--amber); font-size:12.5px; margin-top:10px;"></div>
-      </div>
-    </div>
+        <div class="pub-row">
+          <span>Road closures</span>
+          <span>${publicData.roadClosures}</span>
+        </div>
 
-    <div id="map-confirm-modal" style="position:fixed; inset:0; z-index:10001; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.65); padding:20px;">
-      <div class="dpanel" style="width:min(480px,100%);">
-        <h3 style="margin-top:0;">Confirm your location</h3>
-        <p style="font-size:13px; color:var(--muted);">Google Maps has opened in a new tab. Check the location, then return here and confirm it to continue.</p>
-        <button id="location-confirm" class="trigger-btn">Confirm location & continue</button>
-        <button id="location-cancel" class="resolve-btn" style="margin-left:6px;">Cancel</button>
+        <div class="pub-row">
+          <span>Ambulance ETA</span>
+          <span>${publicData.ambulanceETA}</span>
+        </div>
+
+        <div class="pub-row">
+          <span>Incident location</span>
+          <span>${publicData.location || "—"}</span>
+        </div>
       </div>
+
+      <div class="citizen-foot">
+        Not visible to citizens: hospital bed counts, dispatch logs,
+        internal department communications, other citizens' reports.
+      </div>
+
     </div>
   `;
 
   const sosBtn = document.getElementById("sos-btn");
-  const locationModal = document.getElementById("location-modal");
-  const mapModal = document.getElementById("map-confirm-modal");
-  let selectedCoords = {};
 
-  const submitReport = async () => {
-    const dept = document.getElementById("citizen-department").value;
-    if (!dept) {
-      const err = document.getElementById("sos-error");
-      err.textContent = "Please select the type of emergency first.";
+  sosBtn.addEventListener("click", async () => {
+
+    const department =
+      document.getElementById("citizen-department")?.value;
+
+    const locationInput =
+      document.getElementById("citizen-location");
+
+    const detailsInput =
+      document.getElementById("citizen-details");
+
+    const err =
+      document.getElementById("sos-error");
+
+    if (!department) {
+      err.textContent =
+        "Please select the type of emergency first.";
+
       err.style.display = "block";
-      sosBtn.disabled = false;
       return;
     }
+
+    err.style.display = "none";
+
     sosBtn.disabled = true;
-    const r = await apiPost("/api/incidents/report", {
-      departmentId: dept,
-      location: document.getElementById("citizen-location")?.value.trim(),
-      details: document.getElementById("citizen-details")?.value.trim(),
-      latitude: selectedCoords.latitude, longitude: selectedCoords.longitude
-    });
-    if (r.status === 429 || r.status >= 400) {
-      const err = document.getElementById("sos-error");
-      err.textContent = (r.data && r.data.error) || "Unable to submit the emergency report.";
-      err.style.display = "block";
-      sosBtn.disabled = false;
-      return;
+
+    const sendReport = (coords = {}) => apiPost(
+      "/api/incidents/report",
+      {
+        departmentId: department,
+        location: locationInput?.value.trim(),
+        details: detailsInput?.value.trim(),
+        latitude: coords.latitude,
+        longitude: coords.longitude
+      }
+    );
+
+    const openGoogleMaps = (latitude, longitude) => {
+      window.open(
+        `https://www.google.com/maps?q=${latitude},${longitude}`,
+        "_blank",
+        "noopener,noreferrer"
+      );
+    };
+
+    if (navigator.geolocation) {
+
+      navigator.geolocation.getCurrentPosition(
+        async position => {
+
+          const latitude =
+            position.coords.latitude;
+
+          const longitude =
+            position.coords.longitude;
+
+          locationInput.value =
+            `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+
+          openGoogleMaps(latitude, longitude);
+
+          const confirmLocation =
+            confirm(
+              "Your location has been detected and opened in Google Maps. " +
+              "Please confirm that the location is correct."
+            );
+
+          if (!confirmLocation) {
+            sosBtn.disabled = false;
+            err.textContent =
+              "Please confirm your location before sending the emergency alert.";
+            err.style.display = "block";
+            return;
+          }
+
+          const r = await sendReport({
+            latitude,
+            longitude
+          });
+
+          if (r.status === 429) {
+            err.textContent =
+              (r.data && r.data.error) ||
+              "Please wait before reporting again.";
+
+            err.style.display = "block";
+            sosBtn.disabled = false;
+            return;
+          }
+
+          if (r.status !== 200) {
+            err.textContent =
+              (r.data && r.data.error) ||
+              "Unable to send emergency report.";
+
+            err.style.display = "block";
+            sosBtn.disabled = false;
+            return;
+          }
+
+          alert(
+            "Emergency report sent to Command Centre. " +
+            "The Command Centre will decide whether to implement the emergency."
+          );
+
+          render();
+        },
+
+        async () => {
+
+          const allowManual =
+            confirm(
+              "Location access was not available. " +
+              "Do you want to continue using the location you entered?"
+            );
+
+          if (!allowManual) {
+            sosBtn.disabled = false;
+            return;
+          }
+
+          const r = await sendReport();
+
+          if (r.status === 429) {
+            err.textContent =
+              (r.data && r.data.error) ||
+              "Please wait before reporting again.";
+
+            err.style.display = "block";
+            sosBtn.disabled = false;
+            return;
+          }
+
+          if (r.status !== 200) {
+            err.textContent =
+              (r.data && r.data.error) ||
+              "Unable to send emergency report.";
+
+            err.style.display = "block";
+            sosBtn.disabled = false;
+            return;
+          }
+
+          alert(
+            "Emergency report sent to Command Centre."
+          );
+
+          render();
+        },
+
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+
+    } else {
+
+      const r = await sendReport();
+
+      if (r.status === 200) {
+        alert(
+          "Emergency report sent to Command Centre."
+        );
+        render();
+      } else {
+        err.textContent =
+          (r.data && r.data.error) ||
+          "Unable to send emergency report.";
+
+        err.style.display = "block";
+        sosBtn.disabled = false;
+      }
     }
-    alert("Emergency report sent to the Command Centre. It will decide whether to implement the emergency.");
-    render();
-  };
-
-  sosBtn.addEventListener("click", () => {
-    document.getElementById("sos-error").style.display = "none";
-    locationModal.style.display = "flex";
-  });
-
-  document.getElementById("location-allow").addEventListener("click", () => {
-    const error = document.getElementById("location-error");
-    error.textContent = "";
-    if (!navigator.geolocation) {
-      error.textContent = "Location is not supported by this browser. Use your entered location instead.";
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(pos => {
-      selectedCoords = { latitude: pos.coords.latitude, longitude: pos.coords.longitude };
-      document.getElementById("citizen-location").value = `GPS: ${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`;
-      locationModal.style.display = "none";
-      const mapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(pos.coords.latitude + "," + pos.coords.longitude)}`;
-      window.open(mapsUrl, "_blank", "noopener,noreferrer");
-      mapModal.style.display = "flex";
-    }, () => {
-      error.textContent = "Location access was not granted. Please allow it or use your entered location.";
-    }, { enableHighAccuracy: true, timeout: 10000 });
-  });
-
-  document.getElementById("location-manual").addEventListener("click", () => {
-    const entered = document.getElementById("citizen-location").value.trim();
-    if (!entered) {
-      document.getElementById("location-error").textContent = "Enter a location or landmark first.";
-      return;
-    }
-    selectedCoords = {};
-    locationModal.style.display = "none";
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(entered)}`;
-    window.open(mapsUrl, "_blank", "noopener,noreferrer");
-    mapModal.style.display = "flex";
-  });
-
-  document.getElementById("location-confirm").addEventListener("click", () => {
-    mapModal.style.display = "none";
-    submitReport();
-  });
-  document.getElementById("location-cancel").addEventListener("click", () => {
-    mapModal.style.display = "none";
-    sosBtn.disabled = false;
   });
 }
 
