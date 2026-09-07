@@ -144,7 +144,25 @@ async function handleApi(req, res, pathname) {
     if (!user) return;
     return sendJson(res, 200, store.getActiveIncident());
   }
+// Auth required: pending citizen emergency alerts.
+// Only Command Centre can see these alerts.
+if (method === "GET" && pathname === "/api/incidents/pending") {
+  const user = requireAuth(req, res);
 
+  if (!user) return;
+
+  if (user.role !== "command") {
+    return sendJson(res, 403, {
+      error: "Forbidden: only Command Centre can view pending citizen alerts."
+    });
+  }
+
+  const pending = store.load().incidents.filter(
+    i => i.status === "pending" && i.createdBy === "citizen"
+  );
+
+  return sendJson(res, 200, pending);
+}
   // Auth required: event log (command + any department)
   if (method === "GET" && pathname === "/api/log") {
     const user = requireAuth(req, res);
@@ -188,35 +206,104 @@ async function handleApi(req, res, pathname) {
     return sendJson(res, 200, incident);
   }
 
-  // Citizen report — creates a pending report only. It does NOT route or activate an emergency.
-  if (method === "POST" && pathname === "/api/incidents/report") {
-    const ip = req.socket.remoteAddress || "unknown";
-    const last = lastReportByIp.get(ip) || 0;
-    if (Date.now() - last < REPORT_COOLDOWN_MS) {
-      return sendJson(res, 429, { error: "Please wait before reporting again." });
-    }
-    lastReportByIp.set(ip, Date.now());
-    let body = {};
-    try { body = await readJsonBody(req); } catch { return sendJson(res, 400, { error: "Invalid JSON body" }); }
-    const allowedDepartments = DEPARTMENTS.map(d => d.id);
-    if (!allowedDepartments.includes(body.departmentId)) {
-      return sendJson(res, 400, { error: "Please select an emergency department." });
-    }
-    const s = store.load();
-    const id = `CIT-${1000 + (s.pendingReports || []).length + s.incidents.length}`;
-    const report = {
-      id, createdBy: "citizen", status: "pending", time: new Date().toLocaleTimeString(),
-      departmentId: body.departmentId,
-      location: body.location || "Not provided",
-      latitude: body.latitude ?? null, longitude: body.longitude ?? null,
-      details: body.details || ""
-    };
-    store.addPendingCitizenReport(report);
-    store.addLog({ id: `${id}-log`, text: "Citizen emergency report submitted — awaiting Command Centre decision", time: report.time });
-    // Only the Command Centre is notified. No department is routed at this stage.
-    broadcastChange("citizen-emergency");
-    return sendJson(res, 200, { ok: true, reportId: id, message: "Report sent to Command Centre for review." });
+  // Citizen SOS — creates a PENDING alert.
+// It is NOT routed to departments until Command Centre approves it.
+if (method === "POST" && pathname === "/api/incidents/report") {
+  const ip = req.socket.remoteAddress || "unknown";
+  const last = lastReportByIp.get(ip) || 0;
+
+  if (Date.now() - last < REPORT_COOLDOWN_MS) {
+    return sendJson(res, 429, {
+      error: "Please wait before reporting again."
+    });
   }
+
+  lastReportByIp.set(ip, Date.now());
+
+  let body = {};
+
+  try {
+    body = await readJsonBody(req);
+  } catch {
+    return sendJson(res, 400, {
+      error: "Invalid JSON body"
+    });
+  }
+
+  const departmentId = body.departmentId;
+
+  const department = DEPARTMENTS.find(
+    d => d.id === departmentId
+  );
+
+  if (!department) {
+    return sendJson(res, 400, {
+      error: "Please select a valid emergency department."
+    });
+  }
+
+  const type = EMERGENCY_TYPES.find(
+    t => t.routes.includes(departmentId)
+  ) || {
+    id: departmentId,
+    label: department.name,
+    severity: "standard",
+    routes: [departmentId]
+  };
+
+  const s = store.load();
+
+  const id = `INC-${1000 + s.incidents.length}`;
+
+  const time = new Date().toLocaleTimeString();
+
+  const incident = {
+    id,
+    typeId: type.id,
+    label: department.name,
+    severity: type.severity,
+    routes: [departmentId],
+    time,
+    status: "pending",
+    createdBy: "citizen",
+
+    location: body.location || "Not provided",
+
+    latitude:
+      body.latitude !== undefined
+        ? body.latitude
+        : null,
+
+    longitude:
+      body.longitude !== undefined
+        ? body.longitude
+        : null,
+
+    details: body.details || "",
+
+    departmentStatuses: {}
+  };
+
+  s.incidents.unshift(incident);
+
+  store.addLog({
+    id: `${id}-log`,
+    text: `Citizen emergency reported — awaiting Command Centre decision (${department.name})`,
+    time
+  });
+
+  store.save();
+
+  // Notify Command Centre only.
+  broadcastChange("citizen-emergency");
+
+  return sendJson(res, 200, {
+    ok: true,
+    pending: true,
+    incidentId: incident.id,
+    message: "Emergency report sent to Command Centre."
+  });
+}
 
   // Command Centre decides whether to implement a citizen report.
   if (method === "POST" && pathname === "/api/incidents/citizen-decision") {
