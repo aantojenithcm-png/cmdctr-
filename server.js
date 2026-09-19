@@ -596,7 +596,8 @@ const server = http.createServer(async (req, res) => {
   serveStatic(req, res, pathname);
 });
 
-store.load(); // ensure demo accounts are seeded before first request
-server.listen(PORT, () => {
-  console.log(`Unified Response server running at http://localhost:${PORT}`);
+store.load();
+
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`Unified Response server running on port ${PORT}`);
 });
