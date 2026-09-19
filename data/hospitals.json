@@ -1,0 +1,1105 @@
+{
+  "version": "2026-09-19-prototype",
+  "description": "Tamil Nadu government hospital registry for the Unified Response prototype. This is not an exhaustive live HMIS export; live bed counts require an authorized feed.",
+  "sources": [
+    "https://tnhmis.tn.gov.in/AHIMSG5/hissso/jsp/about.html",
+    "https://www.tnhealth.tn.gov.in/",
+    "https://dipr.tn.gov.in/"
+  ],
+  "hospitals": [
+    {
+      "id": "tn-gov-001",
+      "name": "Government Rajaji Hospital",
+      "district": "Madurai",
+      "type": "Government Medical College Hospital",
+      "latitude": 9.9195,
+      "longitude": 78.1193,
+      "totalBeds": 2500,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-002",
+      "name": "Government Sivagangai Medical College Hospital",
+      "district": "Sivaganga",
+      "type": "Government Medical College Hospital",
+      "latitude": 9.847,
+      "longitude": 78.48,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-003",
+      "name": "Government Dindigul Medical College Hospital",
+      "district": "Dindigul",
+      "type": "Government Medical College Hospital",
+      "latitude": 10.3673,
+      "longitude": 77.9803,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-004",
+      "name": "Government Theni Medical College Hospital",
+      "district": "Theni",
+      "type": "Government Medical College Hospital",
+      "latitude": 10.0104,
+      "longitude": 77.4768,
+      "totalBeds": 900,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-005",
+      "name": "Government Tirunelveli Medical College Hospital",
+      "district": "Tirunelveli",
+      "type": "Government Medical College Hospital",
+      "latitude": 8.7139,
+      "longitude": 77.7567,
+      "totalBeds": 1800,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-006",
+      "name": "Government Thoothukudi Medical College Hospital",
+      "district": "Thoothukudi",
+      "type": "Government Medical College Hospital",
+      "latitude": 8.7642,
+      "longitude": 78.1348,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-007",
+      "name": "Government Kanyakumari Medical College Hospital",
+      "district": "Nagercoil",
+      "type": "Government Medical College Hospital",
+      "latitude": 8.1833,
+      "longitude": 77.4119,
+      "totalBeds": 1000,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-008",
+      "name": "Government Coimbatore Medical College Hospital",
+      "district": "Coimbatore",
+      "type": "Government Medical College Hospital",
+      "latitude": 11.0183,
+      "longitude": 76.9725,
+      "totalBeds": 2300,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-009",
+      "name": "Government Erode Medical College Hospital",
+      "district": "Perundurai",
+      "type": "Government Medical College Hospital",
+      "latitude": 11.275,
+      "longitude": 77.583,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-010",
+      "name": "Government Salem Medical College Hospital",
+      "district": "Salem",
+      "type": "Government Medical College Hospital",
+      "latitude": 11.6633,
+      "longitude": 78.146,
+      "totalBeds": 1600,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-011",
+      "name": "Government Namakkal Medical College Hospital",
+      "district": "Namakkal",
+      "type": "Government Medical College Hospital",
+      "latitude": 11.221,
+      "longitude": 78.167,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-012",
+      "name": "Government Karur Medical College Hospital",
+      "district": "Karur",
+      "type": "Government Medical College Hospital",
+      "latitude": 10.9601,
+      "longitude": 78.0766,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-013",
+      "name": "Government Tiruchirappalli Medical College Hospital",
+      "district": "Tiruchirappalli",
+      "type": "Government Medical College Hospital",
+      "latitude": 10.7867,
+      "longitude": 78.7047,
+      "totalBeds": 1400,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-014",
+      "name": "Government Thanjavur Medical College Hospital",
+      "district": "Thanjavur",
+      "type": "Government Medical College Hospital",
+      "latitude": 10.7867,
+      "longitude": 79.1378,
+      "totalBeds": 1400,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-015",
+      "name": "Government Tiruvarur Medical College Hospital",
+      "district": "Tiruvarur",
+      "type": "Government Medical College Hospital",
+      "latitude": 10.7662,
+      "longitude": 79.6344,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-016",
+      "name": "Government Nagapattinam Medical College Hospital",
+      "district": "Nagapattinam",
+      "type": "Government Medical College Hospital",
+      "latitude": 10.7672,
+      "longitude": 79.8449,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-017",
+      "name": "Government Pudukkottai Medical College Hospital",
+      "district": "Pudukkottai",
+      "type": "Government Medical College Hospital",
+      "latitude": 10.3797,
+      "longitude": 78.8208,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-018",
+      "name": "Government Ariyalur Medical College Hospital",
+      "district": "Ariyalur",
+      "type": "Government Medical College Hospital",
+      "latitude": 11.1401,
+      "longitude": 79.0786,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-019",
+      "name": "Government Perambalur Medical College Hospital",
+      "district": "Perambalur",
+      "type": "Government Medical College Hospital",
+      "latitude": 11.2324,
+      "longitude": 78.8801,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-020",
+      "name": "Government Villupuram Medical College Hospital",
+      "district": "Villupuram",
+      "type": "Government Medical College Hospital",
+      "latitude": 11.9401,
+      "longitude": 79.4861,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-021",
+      "name": "Government Kallakurichi Medical College Hospital",
+      "district": "Kallakurichi",
+      "type": "Government Medical College Hospital",
+      "latitude": 11.7401,
+      "longitude": 78.9597,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-022",
+      "name": "Government Vellore Medical College Hospital",
+      "district": "Vellore",
+      "type": "Government Medical College Hospital",
+      "latitude": 12.9165,
+      "longitude": 79.1325,
+      "totalBeds": 1000,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-023",
+      "name": "Government Tirupattur District Hospital",
+      "district": "Tirupattur",
+      "type": "District Headquarters Hospital",
+      "latitude": 12.497,
+      "longitude": 78.56,
+      "totalBeds": 400,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-024",
+      "name": "Government Ranipet District Hospital",
+      "district": "Ranipet",
+      "type": "District Headquarters Hospital",
+      "latitude": 12.9249,
+      "longitude": 79.333,
+      "totalBeds": 400,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-025",
+      "name": "Government Tiruvannamalai Medical College Hospital",
+      "district": "Tiruvannamalai",
+      "type": "Government Medical College Hospital",
+      "latitude": 12.2253,
+      "longitude": 79.0747,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-026",
+      "name": "Government Krishnagiri Medical College Hospital",
+      "district": "Krishnagiri",
+      "type": "Government Medical College Hospital",
+      "latitude": 12.5186,
+      "longitude": 78.2137,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-027",
+      "name": "Government Dharmapuri Medical College Hospital",
+      "district": "Dharmapuri",
+      "type": "Government Medical College Hospital",
+      "latitude": 12.1211,
+      "longitude": 78.1582,
+      "totalBeds": 700,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-028",
+      "name": "Government Ooty District Headquarters Hospital",
+      "district": "Udhagamandalam",
+      "type": "District Headquarters Hospital",
+      "latitude": 11.4064,
+      "longitude": 76.6932,
+      "totalBeds": 300,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-029",
+      "name": "Government Coonoor Hospital",
+      "district": "Coonoor",
+      "type": "Government Hospital",
+      "latitude": 11.353,
+      "longitude": 76.7959,
+      "totalBeds": 200,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-030",
+      "name": "Government Gudalur Hospital",
+      "district": "Gudalur",
+      "type": "Government Hospital",
+      "latitude": 11.5,
+      "longitude": 76.5,
+      "totalBeds": 100,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-031",
+      "name": "Government Chennai Medical College / Rajiv Gandhi Government General Hospital",
+      "district": "Chennai",
+      "type": "Government Medical College Hospital",
+      "latitude": 13.0827,
+      "longitude": 80.2707,
+      "totalBeds": 3000,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity",
+        "cardiac"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-032",
+      "name": "Government Stanley Medical College Hospital",
+      "district": "Chennai",
+      "type": "Government Medical College Hospital",
+      "latitude": 13.1017,
+      "longitude": 80.2885,
+      "totalBeds": 2000,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity",
+        "cardiac"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-033",
+      "name": "Government Kilpauk Medical College Hospital",
+      "district": "Chennai",
+      "type": "Government Medical College Hospital",
+      "latitude": 13.078,
+      "longitude": 80.242,
+      "totalBeds": 1000,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-034",
+      "name": "Kalaignar Centenary Super Speciality Hospital",
+      "district": "Chennai",
+      "type": "Government Super Speciality Hospital",
+      "latitude": 13.0667,
+      "longitude": 80.248,
+      "totalBeds": 1000,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "surgery",
+        "cardiac",
+        "neurology",
+        "oncology"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-035",
+      "name": "Government Periyar Hospital",
+      "district": "Chennai",
+      "type": "Government Super Speciality Hospital",
+      "latitude": 13.122,
+      "longitude": 80.217,
+      "totalBeds": 560,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "surgery",
+        "oncology",
+        "neurology",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-036",
+      "name": "Government Hospital for Thoracic Medicine",
+      "district": "Tambaram",
+      "type": "Government Specialty Hospital",
+      "latitude": 12.9249,
+      "longitude": 80.1,
+      "totalBeds": 776,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "respiratory",
+        "icu",
+        "infectious"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-037",
+      "name": "Government Hospital Sriperumbudur",
+      "district": "Sriperumbudur",
+      "type": "Government Hospital",
+      "latitude": 12.9675,
+      "longitude": 79.941,
+      "totalBeds": 53,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-038",
+      "name": "Government District Headquarters Hospital Chengalpattu",
+      "district": "Chengalpattu",
+      "type": "District Headquarters Hospital",
+      "latitude": 12.6819,
+      "longitude": 79.9888,
+      "totalBeds": 500,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-039",
+      "name": "Government Hospital Kanchipuram",
+      "district": "Kanchipuram",
+      "type": "District Headquarters Hospital",
+      "latitude": 12.8342,
+      "longitude": 79.7036,
+      "totalBeds": 400,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-040",
+      "name": "Government District Headquarters Hospital Tiruvallur",
+      "district": "Tiruvallur",
+      "type": "District Headquarters Hospital",
+      "latitude": 13.1439,
+      "longitude": 79.9089,
+      "totalBeds": 400,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-041",
+      "name": "Government Hospital Tindivanam",
+      "district": "Tindivanam",
+      "type": "Government Hospital",
+      "latitude": 12.234,
+      "longitude": 79.655,
+      "totalBeds": 200,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-042",
+      "name": "Government Hospital Arakkonam",
+      "district": "Arakkonam",
+      "type": "Government Hospital",
+      "latitude": 13.084,
+      "longitude": 79.67,
+      "totalBeds": 200,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-043",
+      "name": "Government Hospital Hosur",
+      "district": "Hosur",
+      "type": "Government Hospital",
+      "latitude": 12.7409,
+      "longitude": 77.8253,
+      "totalBeds": 300,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-044",
+      "name": "Government Hospital Mettur",
+      "district": "Mettur",
+      "type": "Government Hospital",
+      "latitude": 11.787,
+      "longitude": 77.8,
+      "totalBeds": 250,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-045",
+      "name": "Government Hospital Attur",
+      "district": "Attur",
+      "type": "Government Hospital",
+      "latitude": 11.594,
+      "longitude": 78.601,
+      "totalBeds": 200,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-046",
+      "name": "Government Hospital Rasipuram",
+      "district": "Rasipuram",
+      "type": "Government Hospital",
+      "latitude": 11.46,
+      "longitude": 78.186,
+      "totalBeds": 200,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-047",
+      "name": "Government Head Quarters Hospital Erode",
+      "district": "Erode",
+      "type": "District Headquarters Hospital",
+      "latitude": 11.341,
+      "longitude": 77.7172,
+      "totalBeds": 500,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "icu",
+        "trauma",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-048",
+      "name": "Government Hospital Gobichettipalayam",
+      "district": "Gobichettipalayam",
+      "type": "Government Hospital",
+      "latitude": 11.454,
+      "longitude": 77.442,
+      "totalBeds": 200,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-049",
+      "name": "Government Hospital Pollachi",
+      "district": "Pollachi",
+      "type": "Government Hospital",
+      "latitude": 10.659,
+      "longitude": 77.008,
+      "totalBeds": 300,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-050",
+      "name": "Government Hospital Mettupalayam",
+      "district": "Mettupalayam",
+      "type": "Government Hospital",
+      "latitude": 11.3,
+      "longitude": 76.94,
+      "totalBeds": 250,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-051",
+      "name": "Government Hospital Karaikudi",
+      "district": "Karaikudi",
+      "type": "Government Hospital",
+      "latitude": 10.073,
+      "longitude": 78.78,
+      "totalBeds": 300,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-052",
+      "name": "Government Hospital Sivakasi",
+      "district": "Sivakasi",
+      "type": "Government Hospital",
+      "latitude": 9.449,
+      "longitude": 77.797,
+      "totalBeds": 300,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-053",
+      "name": "Government Hospital Kovilpatti",
+      "district": "Kovilpatti",
+      "type": "District Headquarters Hospital",
+      "latitude": 9.171,
+      "longitude": 77.868,
+      "totalBeds": 300,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    },
+    {
+      "id": "tn-gov-054",
+      "name": "Government Hospital Ambasamudram",
+      "district": "Ambasamudram",
+      "type": "Government Hospital",
+      "latitude": 8.71,
+      "longitude": 77.46,
+      "totalBeds": 200,
+      "availableBeds": null,
+      "bedAvailabilityStatus": "LIVE_FEED_REQUIRED",
+      "facilities": [
+        "emergency",
+        "surgery",
+        "maternity"
+      ],
+      "emergency": true,
+      "source": "Tamil Nadu Government / official departmental sources",
+      "coordinatesStatus": "Approximate hospital-area coordinates for prototype; verify before operational use"
+    }
+  ]
+}
