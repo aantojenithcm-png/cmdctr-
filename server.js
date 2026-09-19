@@ -573,6 +573,13 @@ function createIncident(type, createdBy, details = {}) {
 // ---------- Server ----------
 const server = http.createServer(async (req, res) => {
   const { pathname } = new URL(req.url, `http://${req.headers.host}`);
+  // Google Search Console verification
+if (pathname === "/google94a89e532a118949.html") {
+  res.writeHead(200, {
+    "Content-Type": "text/plain; charset=utf-8"
+  });
+  return res.end("google-site-verification: google94a89e532a118949.html");
+}
 
   if (req.method === "OPTIONS") {
     res.writeHead(204, {
