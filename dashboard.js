@@ -863,11 +863,15 @@ async function renderCitizen() {
       render();
     },
 
-    async () => {
-      const allowManual = confirm(
-        "Location access was not available. " +
-        "Do you want to continue using the location you entered?"
-      );
+    async (error) => {
+  alert(
+    "Location error:\n" +
+    "Code: " + error.code + "\n" +
+    "Message: " + error.message
+  );
+
+  sosBtn.disabled = false;
+    }
 
       if (!allowManual) {
         sosBtn.disabled = false;
