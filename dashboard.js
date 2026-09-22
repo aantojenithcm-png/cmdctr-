@@ -668,30 +668,17 @@ async function renderCitizen() {
 
   document.getElementById("main").innerHTML = `
     <div class="citizen-wrap">
-
       <div class="main-head">
         <h2>Citizen app</h2>
-        <div class="sub">
-          Only what you need to know — nothing internal to any department.
-        </div>
+        <div class="sub">Only what you need to know — nothing internal to any department.</div>
       </div>
 
       <div style="display:grid; gap:8px; margin-bottom:12px;">
-
         <select id="citizen-department"
           style="padding:10px; border-radius:6px; border:1px solid var(--border);
           background:var(--panel2); color:var(--text);">
-
-          <option value="">
-            Select the type of emergency
-          </option>
-
-          ${deptList.map(d => `
-            <option value="${d.id}">
-              ${d.name}
-            </option>
-          `).join("")}
-
+          <option value="">Select the type of emergency</option>
+          ${deptList.map(d => `<option value="${d.id}">${d.name}</option>`).join("")}
         </select>
 
         <input id="citizen-location"
@@ -703,7 +690,6 @@ async function renderCitizen() {
           placeholder="What happened?"
           style="padding:10px; border-radius:6px; border:1px solid var(--border);
           background:var(--panel2); color:var(--text);">
-
       </div>
 
       <button class="sos-btn" id="sos-btn">
@@ -716,8 +702,7 @@ async function renderCitizen() {
       </div>
 
       <div class="label-row">
-        <span class="icon" data-icon="bell"></span>
-        Alerts near you
+        <span class="icon" data-icon="bell"></span> Alerts near you
       </div>
 
       <div class="dpanel" style="font-size:13.5px; line-height:1.6;">
@@ -725,238 +710,169 @@ async function renderCitizen() {
       </div>
 
       <div class="label-row">
-        <span class="icon" data-icon="location-dot"></span>
-        Public status
+        <span class="icon" data-icon="location-dot"></span> Public status
       </div>
 
       <div class="dpanel">
-        <div class="pub-row">
-          <span>Nearest ER</span>
-          <span>${publicData.nearestER}</span>
-        </div>
-
-        <div class="pub-row">
-          <span>Road closures</span>
-          <span>${publicData.roadClosures}</span>
-        </div>
-
-        <div class="pub-row">
-          <span>Ambulance ETA</span>
-          <span>${publicData.ambulanceETA}</span>
-        </div>
-
-        <div class="pub-row">
-          <span>Incident location</span>
-          <span>${publicData.location || "—"}</span>
-        </div>
+        <div class="pub-row"><span>Nearest ER</span><span>${publicData.nearestER}</span></div>
+        <div class="pub-row"><span>Road closures</span><span>${publicData.roadClosures}</span></div>
+        <div class="pub-row"><span>Ambulance ETA</span><span>${publicData.ambulanceETA}</span></div>
+        <div class="pub-row"><span>Incident location</span><span>${publicData.location || "—"}</span></div>
       </div>
 
       <div class="citizen-foot">
         Not visible to citizens: hospital bed counts, dispatch logs,
         internal department communications, other citizens' reports.
       </div>
-
     </div>
   `;
 
   const sosBtn = document.getElementById("sos-btn");
+  const locationInput = document.getElementById("citizen-location");
+  const detailsInput = document.getElementById("citizen-details");
+  const err = document.getElementById("sos-error");
 
-  sosBtn.addEventListener("click", async () => {
-
-    const department =
-      document.getElementById("citizen-department")?.value;
-
-    const locationInput =
-      document.getElementById("citizen-location");
-
-    const detailsInput =
-      document.getElementById("citizen-details");
-
-    const err =
-      document.getElementById("sos-error");
-
-    if (!department) {
-      err.textContent =
-        "Please select the type of emergency first.";
-
+  // Touching the location field requests GPS permission.
+  // Google Maps is NOT opened here.
+  locationInput?.addEventListener("focus", () => {
+    if (!navigator.geolocation) {
+      err.textContent = "This browser does not support location access.";
       err.style.display = "block";
+      return;
+    }
+
+    if (locationInput.dataset.latitude && locationInput.dataset.longitude) {
       return;
     }
 
     err.style.display = "none";
 
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        locationInput.value = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+        locationInput.dataset.latitude = String(latitude);
+        locationInput.dataset.longitude = String(longitude);
+      },
+      error => {
+        if (error.code === 1) {
+          err.textContent = "Location permission is off. Please allow location access for this website.";
+        } else if (error.code === 2) {
+          err.textContent = "Your live location could not be determined. Please try again.";
+        } else {
+          err.textContent = "Location access timed out. Please try again.";
+        }
+        err.style.display = "block";
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  });
+
+  sosBtn?.addEventListener("click", async () => {
+    const department = document.getElementById("citizen-department")?.value;
+
+    if (!department) {
+      err.textContent = "Please select the type of emergency first.";
+      err.style.display = "block";
+      return;
+    }
+
+    err.style.display = "none";
     sosBtn.disabled = true;
 
-    const sendReport = (coords = {}) => {
-  let latitude = coords.latitude;
-  let longitude = coords.longitude;
+    const sendReport = async (latitude, longitude) => {
+      locationInput.value = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+      locationInput.dataset.latitude = String(latitude);
+      locationInput.dataset.longitude = String(longitude);
 
-  // If GPS coordinates are not available,
-  // use coordinates entered by the citizen.
-  if ((latitude == null || longitude == null) && locationInput?.value) {
-    const match = locationInput.value.match(
-      /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/
-    );
+      return apiPost("/api/incidents/report", {
+        departmentId: department,
+        location: locationInput.value.trim(),
+        details: detailsInput?.value.trim(),
+        latitude,
+        longitude
+      });
+    };
 
-    if (match) {
-      latitude = Number(match[1]);
-      longitude = Number(match[2]);
-    }
-  }
+    const sendStoredCoordinates = async () => {
+      let latitude = locationInput?.dataset.latitude
+        ? Number(locationInput.dataset.latitude) : null;
+      let longitude = locationInput?.dataset.longitude
+        ? Number(locationInput.dataset.longitude) : null;
 
-  return apiPost(
-    "/api/incidents/report",
-    {
-      departmentId: department,
-      location: locationInput?.value.trim(),
-      details: detailsInput?.value.trim(),
-      latitude,
-      longitude
-    }
-  );
-};
-
-        if (navigator.geolocation) {
-
-      navigator.geolocation.getCurrentPosition(
-        async position => {
-
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-
-          // Keep the citizen's entered location.
-          // If it is empty, use the GPS coordinates as the location.
-          const enteredLocation = locationInput?.value.trim();
-
-          if (!enteredLocation) {
-            locationInput.value =
-              `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-          }
-
-          // Send GPS coordinates + entered location to CmdCtr.
-          const r = await sendReport({
-            latitude,
-            longitude
-          });
-
-          if (r.status === 429) {
-            err.textContent =
-              (r.data && r.data.error) ||
-              "Please wait before reporting again.";
-
-            err.style.display = "block";
-            sosBtn.disabled = false;
-            return;
-          }
-
-          if (r.status !== 200) {
-            err.textContent =
-              (r.data && r.data.error) ||
-              "Unable to send emergency report.";
-
-            err.style.display = "block";
-            sosBtn.disabled = false;
-            return;
-          }
-
-          alert(
-            "Emergency report sent to Command Centre. " +
-            "The Command Centre will decide whether to implement the emergency."
-          );
-
-          render();
-        },
-
-        async error => {
-
-          // GPS was unavailable.
-          // Try to use the location entered by the citizen.
-          const enteredLocation =
-            locationInput?.value.trim();
-
-          if (!enteredLocation) {
-            err.textContent =
-              "Location could not be detected. Please enter your location.";
-
-            err.style.display = "block";
-            sosBtn.disabled = false;
-            return;
-          }
-
-          const r = await sendReport();
-
-          if (r.status === 429) {
-            err.textContent =
-              (r.data && r.data.error) ||
-              "Please wait before reporting again.";
-
-            err.style.display = "block";
-            sosBtn.disabled = false;
-            return;
-          }
-
-          if (r.status !== 200) {
-            err.textContent =
-              (r.data && r.data.error) ||
-              "Unable to send emergency report.";
-
-            err.style.display = "block";
-            sosBtn.disabled = false;
-            return;
-          }
-
-          alert(
-            "Emergency report sent to Command Centre."
-          );
-
-          render();
-        },
-
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
+      if ((latitude == null || longitude == null) && locationInput?.value) {
+        const match = locationInput.value.match(
+          /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/
+        );
+        if (match) {
+          latitude = Number(match[1]);
+          longitude = Number(match[2]);
         }
-      );
+      }
 
-    } else {
+      if (latitude == null || longitude == null) return null;
 
-      // Browser does not support GPS.
-      // Use the location entered by the citizen.
-      const r = await sendReport();
+      return apiPost("/api/incidents/report", {
+        departmentId: department,
+        location: locationInput.value.trim(),
+        details: detailsInput?.value.trim(),
+        latitude,
+        longitude
+      });
+    };
 
-      if (r.status === 200) {
-        alert(
-          "Emergency report sent to Command Centre."
-        );
-        render();
-      } else {
-        err.textContent =
-          (r.data && r.data.error) ||
-          "Unable to send emergency report.";
-
+    const finish = r => {
+      if (!r) {
+        err.textContent = "Live location is required for AI hospital matching. Please allow location access and try again.";
         err.style.display = "block";
         sosBtn.disabled = false;
+        return;
       }
-    }
-  });
-}
-      const r = await sendReport();
 
-      if (r.status === 200) {
-        alert(
-          "Emergency report sent to Command Centre."
-        );
-        render();
-      } else {
-        err.textContent =
-          (r.data && r.data.error) ||
-          "Unable to send emergency report.";
-
+      if (r.status === 429) {
+        err.textContent = (r.data && r.data.error) || "Please wait before reporting again.";
         err.style.display = "block";
         sosBtn.disabled = false;
+        return;
       }
+
+      if (r.status !== 200) {
+        err.textContent = (r.data && r.data.error) || "Unable to send emergency report.";
+        err.style.display = "block";
+        sosBtn.disabled = false;
+        return;
+      }
+
+      alert("Emergency report sent to Command Centre. The Command Centre will decide whether to implement the emergency.");
+      render();
+    };
+
+    if (!navigator.geolocation) {
+      finish(await sendStoredCoordinates());
+      return;
     }
+
+    // Always request a fresh position when the emergency is reported.
+    navigator.geolocation.getCurrentPosition(
+      async position => {
+        finish(await sendReport(position.coords.latitude, position.coords.longitude));
+      },
+      async error => {
+        if (error.code === 1) {
+          err.textContent = "Location permission is off. Please allow location access for this website.";
+        } else {
+          err.textContent = "Unable to access live location. You can use manually entered coordinates.";
+        }
+        err.style.display = "block";
+
+        const fallback = await sendStoredCoordinates();
+        if (fallback) finish(fallback);
+        else sosBtn.disabled = false;
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
   });
 }
 
