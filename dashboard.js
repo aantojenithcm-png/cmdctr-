@@ -816,109 +816,24 @@ async function renderCitizen() {
   );
 };
 
-    const openGoogleMaps = (latitude, longitude) => {
-      window.open(
-        `https://www.google.com/maps?q=${latitude},${longitude}`,
-        "_blank",
-        "noopener,noreferrer"
-      );
-    };
-
-    if (navigator.geolocation) {
+        if (navigator.geolocation) {
 
       navigator.geolocation.getCurrentPosition(
         async position => {
 
-          const latitude =
-            position.coords.latitude;
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
 
-          const longitude =
-            position.coords.longitude;
+          // Keep the citizen's entered location.
+          // If it is empty, use the GPS coordinates as the location.
+          const enteredLocation = locationInput?.value.trim();
 
-          locationInput.value =
-            `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+          if (!enteredLocation) {
+            locationInput.value =
+              `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+          }
 
-          if (navigator.geolocation) {
-
-  navigator.geolocation.getCurrentPosition(
-    async position => {
-
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-
-      locationInput.value =
-        `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-
-      // GPS location is already confirmed.
-      const r = await sendReport({
-        latitude,
-        longitude
-      });
-
-      if (r.status === 429) {
-        err.textContent =
-          (r.data && r.data.error) ||
-          "Please wait before reporting again.";
-        err.style.display = "block";
-        sosBtn.disabled = false;
-        return;
-      }
-
-      if (r.status !== 200) {
-        err.textContent =
-          (r.data && r.data.error) ||
-          "Unable to send emergency report.";
-        err.style.display = "block";
-        sosBtn.disabled = false;
-        return;
-      }
-
-      alert(
-        "Emergency report sent to Command Centre. " +
-        "The Command Centre will decide whether to implement the emergency."
-      );
-
-      render();
-    },
-
-    async (error) => {
-  alert(
-    "Location error:\n" +
-    "Code: " + error.code + "\n" +
-    "Message: " + error.message
-  );
-
-  sosBtn.disabled = false;
-    }
-
-      if (!allowManual) {
-        sosBtn.disabled = false;
-        return;
-      }
-
-      const r = await sendReport();
-
-      if (r.status === 200) {
-        alert("Emergency report sent to Command Centre.");
-        render();
-      } else {
-        err.textContent =
-          (r.data && r.data.error) ||
-          "Unable to send emergency report.";
-        err.style.display = "block";
-        sosBtn.disabled = false;
-      }
-    },
-
-    {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0
-    }
-  );
-
-} else {
-
+          // Send GPS coordinates + entered location to CmdCtr.
           const r = await sendReport({
             latitude,
             longitude
@@ -952,15 +867,18 @@ async function renderCitizen() {
           render();
         },
 
-        async () => {
+        async error => {
 
-          const allowManual =
-            confirm(
-              "Location access was not available. " +
-              "Do you want to continue using the location you entered?"
-            );
+          // GPS was unavailable.
+          // Try to use the location entered by the citizen.
+          const enteredLocation =
+            locationInput?.value.trim();
 
-          if (!allowManual) {
+          if (!enteredLocation) {
+            err.textContent =
+              "Location could not be detected. Please enter your location.";
+
+            err.style.display = "block";
             sosBtn.disabled = false;
             return;
           }
@@ -1003,6 +921,26 @@ async function renderCitizen() {
 
     } else {
 
+      // Browser does not support GPS.
+      // Use the location entered by the citizen.
+      const r = await sendReport();
+
+      if (r.status === 200) {
+        alert(
+          "Emergency report sent to Command Centre."
+        );
+        render();
+      } else {
+        err.textContent =
+          (r.data && r.data.error) ||
+          "Unable to send emergency report.";
+
+        err.style.display = "block";
+        sosBtn.disabled = false;
+      }
+    }
+  });
+}
       const r = await sendReport();
 
       if (r.status === 200) {
