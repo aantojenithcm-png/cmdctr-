@@ -470,9 +470,28 @@ if (method === "POST" && pathname === "/api/incidents/report") {
     report.selectedHospitalLatitude = Number(selectedHospital.latitude);
     report.selectedHospitalLongitude = Number(selectedHospital.longitude);
 
-    const type = EMERGENCY_TYPES.find(t => t.id === (body.typeId || departmentToType[report.departmentId]));
-    if (!type) return sendJson(res, 400, { error: "Unable to classify this report." });
+    // Determine the emergency type from the report.
+// Older reports may not have departmentId, so fall back to routes[0].
+const departmentId =
+  report.departmentId ||
+  (Array.isArray(report.routes) && report.routes.length > 0
+    ? report.routes[0]
+    : null);
 
+const typeId =
+  body.typeId ||
+  report.typeId ||
+  departmentToType[departmentId];
+
+const type = EMERGENCY_TYPES.find(
+  t => t.id === typeId
+);
+
+if (!type) {
+  return sendJson(res, 400, {
+    error: "Unable to classify this report."
+  });
+}
     // Only now remove the pending report and implement the emergency.
     store.removePendingCitizenReport(report.id);
     const incident = createIncident(type, "citizen", report);
@@ -544,7 +563,7 @@ function createIncident(type, createdBy, details = {}) {
   const time = new Date().toLocaleTimeString();
   const departmentStatuses = Object.fromEntries(type.routes.map(id => [id, "NEW"]));
   const incident = {
-    id, typeId: type.id, label: type.label, severity: type.severity,
+    id, departmentId, typeId: type.id, label: type.label, severity: type.severity,
     routes: type.routes, time, status: "active", createdBy,
     location: details.location || "Not provided",
     latitude: details.latitude ?? null, longitude: details.longitude ?? null,
