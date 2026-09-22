@@ -787,16 +787,34 @@ async function renderCitizen() {
 
     sosBtn.disabled = true;
 
-    const sendReport = (coords = {}) => apiPost(
-      "/api/incidents/report",
-      {
-        departmentId: department,
-        location: locationInput?.value.trim(),
-        details: detailsInput?.value.trim(),
-        latitude: coords.latitude,
-        longitude: coords.longitude
-      }
+    const sendReport = (coords = {}) => {
+  let latitude = coords.latitude;
+  let longitude = coords.longitude;
+
+  // If GPS coordinates are not available,
+  // use coordinates entered by the citizen.
+  if ((latitude == null || longitude == null) && locationInput?.value) {
+    const match = locationInput.value.match(
+      /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/
     );
+
+    if (match) {
+      latitude = Number(match[1]);
+      longitude = Number(match[2]);
+    }
+  }
+
+  return apiPost(
+    "/api/incidents/report",
+    {
+      departmentId: department,
+      location: locationInput?.value.trim(),
+      details: detailsInput?.value.trim(),
+      latitude,
+      longitude
+    }
+  );
+};
 
     const openGoogleMaps = (latitude, longitude) => {
       window.open(
